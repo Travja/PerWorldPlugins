@@ -1,6 +1,5 @@
 package us.Myles.PWP;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -99,7 +98,7 @@ public class Plugin extends JavaPlugin {
 		boolean isInjected = false;
 		$("Enabled, attempting to inject CommandHandler...");
 		try {
-			Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+			Field f = Bukkit.getServer().getPluginManager().getClass().getDeclaredField("commandMap");
 			if (f.getType().getClass().getPackage().getName().contains("Myles")) {
 				Bukkit.getServer()
 						.getLogger()
@@ -109,8 +108,8 @@ public class Plugin extends JavaPlugin {
 			}
 			if (!isInjected) {
 				f.setAccessible(true);
-				SimpleCommandMap oldCommandMap = (SimpleCommandMap) f.get(Bukkit.getServer());
-				f.set(Bukkit.getServer(), new FakeSimpleCommandMap(oldCommandMap));
+				SimpleCommandMap oldCommandMap = (SimpleCommandMap) f.get(Bukkit.getServer().getPluginManager());
+				f.set(Bukkit.getServer().getPluginManager(), new FakeSimpleCommandMap(oldCommandMap));
 			}
 		} catch (Exception e) {
 			Bukkit.getServer().getLogger().log(Level.SEVERE,
